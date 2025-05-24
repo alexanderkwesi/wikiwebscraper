@@ -1,0 +1,22 @@
+{
+  "name": "Wiki-Web-Scraping",
+  "displayName": "Scraping For Data Analysis",
+  "description": "Scraping",
+  "scripts": {
+    "start": "Port=3000 open template/wikiscraping.html",
+    "build": "Port=5000 python3.13 backend/wikiwebscraping.py",
+    "dev": "Port=3000 concurrently \"npm start\" \"npm run build\" "
+  },
+  "dependencies": {
+    "beautifulsoup-": "^1.2.6",
+    "concurrently": "^9.1.2",
+    "cross-env": "^7.0.3",
+    "nodemon": "^2.0.4",
+    "open": "^10.1.2",
+    "request": "^2.88.2"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  }
+}

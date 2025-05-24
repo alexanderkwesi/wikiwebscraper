@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Wiki Python Web Scraper</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-md p-6 w-full max-w-4xl">
+        <h1 class="text-2xl font-bold mb-4 text-center text-indigo-700">Wikipedia Python Web Scraper</h1>
+        
+        <form id="scrape-form" class="space-y-4" method="POST" action="/scrapes" onsubmit="return false;">
+            <div>
+                <label for="url" class="block text-sm font-medium text-gray-700">Enter URL to scrape:</label>
+                <input 
+                    type="text" 
+                    id="url" 
+                    name="url" 
+                    required 
+                    autocomplete="on"
+                    placeholder="https://example.com"
+                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                >
+            </div>
+            <div class="text-center">
+                <button 
+                    id="btn_click"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2 rounded-lg transition duration-200"
+                >
+                    Scrape
+                </button>
+            </div>
+        </form>
+
+        <div id="results" class="mt-6 hidden">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Results:</h3>
+            <div id="header" class="text-sm text-gray-700 whitespace-pre-wrap overflow-x-auto max-h-[400px]"></div>
+            <div id="output" class="text-sm text-gray-700 whitespace-pre-wrap overflow-x-auto max-h-[400px] max-w-[700px]"></div>
+        </div>
+    </div>
+
+    <!--<script>
+            $(document).ready(function () {
+                const $form = $('#scrape-form');
+                const $output = $('#output');
+                const $results = $('#results');
+            
+                $form.on('submit', function (e) {
+                    e.preventDefault();
+            
+                    $results.removeClass('hidden');
+                    $output.html('⏳ Scraping...');
+            
+                    const formData = new FormData(this);
+            
+                    $.ajax({
+                        url: 'http://127.0.0.1:5050/scrape',
+                        method: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (data, textStatus, jqXHR) {
+                            // Assume response is text/html
+                            $output.html(data);
+                        },
+                        error: function (jqXHR) {
+                            let errorMessage = `HTTP error: ${jqXHR.status}`;
+                            try {
+                                const responseJson = JSON.parse(jqXHR.responseText);
+                                if (responseJson.error) {
+                                    errorMessage = `Error: ${responseJson.error}`;
+                                }
+                            } catch (err) {
+                                // fallback if not JSON
+                            }
+                            $output.html(`<p class="text-red-600">${errorMessage}</p>`);
+                        }
+                    });
+                });
+            });
+    </script>-->
+    <script>
+        const $button = document.getElementById('btn_click');
+        const $header = document.getElementById('header');
+        const $output = document.getElementById('output');
+        const $results = document.getElementById('results');
+
+        $button.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        $results.classList.remove('hidden');
+        $output.textContent = '⏳ Scraping...';
+
+        const url = document.getElementById('url').value;
+
+        $.ajax({
+            url: 'http://127.0.0.1:5000/scrapes',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'text/html'
+            },
+            contentType: 'application/json',  // Use contentType instead of headers here
+            data: JSON.stringify({ url_: url }),
+            dataType:'html',
+            success: function(html) {
+                //console.log("Server response: Table");
+                //$output.textContent = `✅ Success: ${JSON.stringify(responses.responses)}`;
+                //$output.innerHTML = `<table>✅ Success: ${JSON.stringify(responses.responses)}</table>`;
+                //$('#header').append(`<div>${responses.responses}</div>`);
+                $('#output').html(`${html}`);
+                //if (responses.responses.html && responses.responses.html.length > 0) {
+                   // responses.responses.html.forEach(function (htmlBlock) {
+                     //   $('#output').append(`<table>${htmlBlock}</table>`);
+                    //});
+                //} else {
+                  //  $('#output').text("No results found.");
+                //}
+            },
+            error: function(xhr, status, error) {
+                console.error("Error:", error);
+                $output.textContent = `❌ Error: ${error}`;
+            }
+        });
+    });
+    </script>
+   
+    <!--<script>
+       
+            $.ajax({
+                url: "http://127.0.0.1:5000/scrapes",
+                method: "",
+                dataType: "json",
+                success: function (responses) {
+                    $('#output').empty(); // Clear loading text
+
+                    if (responses.responses.html && responses.responses.html.length > 0) {
+                        responses.responses.html.forEach(function (htmlBlock) {
+                            $('#output').append(`<div>${htmlBlock}</div>`);
+                        });
+                    } else {
+                        $('#output').text("No results found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching data:", error);
+                    $('#output').text("Failed to load data.");
+                }
+            });
+       
+    </script>-->
+</body>
+</html>
+
+
+
